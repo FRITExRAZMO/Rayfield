@@ -1,4 +1,5 @@
 --[[
+upd
 	Rayfield Interface Suite
 	by Sirius rewind by frite
 ]]
@@ -836,7 +837,6 @@ local function ChangeTheme(Theme)
     -- ✨ Récupérer les transparences du thème
     local topbarTransparency = SelectedTheme.TopbarTransparency or 0
     local searchTransparency = SelectedTheme.SearchTransparency or 0
-    local elementTransparency = SelectedTheme.ElementTransparency or 0
     
     -- Application des couleurs et transparence de la Topbar
     Rayfield.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
@@ -847,7 +847,6 @@ local function ChangeTheme(Theme)
     Rayfield.Main.Topbar.ChangeSize.ImageColor3 = SelectedTheme.TextColor
     Rayfield.Main.Topbar.Hide.ImageColor3 = SelectedTheme.TextColor
     Rayfield.Main.Topbar.Search.ImageColor3 = SelectedTheme.TextColor
-    
     if Topbar:FindFirstChild('Settings') then
         Rayfield.Main.Topbar.Settings.ImageColor3 = SelectedTheme.TextColor
         Rayfield.Main.Topbar.Divider.BackgroundColor3 = SelectedTheme.ElementStroke
@@ -865,6 +864,7 @@ local function ChangeTheme(Theme)
         Main.Notice.BackgroundColor3 = SelectedTheme.Background
     end
     
+    -- Application des couleurs de texte
     for _, text in ipairs(Rayfield:GetDescendants()) do
         if text.Parent.Parent ~= Notifications then
             if text:IsA('TextLabel') or text:IsA('TextBox') then 
@@ -873,12 +873,13 @@ local function ChangeTheme(Theme)
         end
     end
     
--- ✨ Application aux éléments (SANS transparence)
-for _, TabPage in ipairs(Elements:GetChildren()) do
-    for _, Element in ipairs(TabPage:GetChildren()) do
-        if Element.ClassName == "Frame" and Element.Name ~= "Placeholder" and Element.Name ~= "SectionSpacing" and Element.Name ~= "Divider" and Element.Name ~= "SectionTitle" and Element.Name ~= "SearchTitle-fsefsefesfsefesfesfThanks" then
-            Element.BackgroundColor3 = SelectedTheme.ElementBackground
-            Element.UIStroke.Color = SelectedTheme.ElementStroke
+    -- Application des couleurs aux éléments (SANS toucher à la transparence)
+    for _, TabPage in ipairs(Elements:GetChildren()) do
+        for _, Element in ipairs(TabPage:GetChildren()) do
+            if Element.ClassName == "Frame" and Element.Name ~= "Placeholder" and Element.Name ~= "SectionSpacing" and Element.Name ~= "Divider" and Element.Name ~= "SectionTitle" and Element.Name ~= "SearchTitle-fsefsefesfsefesfesfThanks" then
+                Element.BackgroundColor3 = SelectedTheme.ElementBackground
+                Element.UIStroke.Color = SelectedTheme.ElementStroke
+            end
         end
     end
 end
@@ -4152,6 +4153,7 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
+
 
 
 
