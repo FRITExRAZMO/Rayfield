@@ -504,10 +504,20 @@ Amethyst = {
     InputStroke = Color3.fromRGB(80, 50, 110),
     PlaceholderColor = Color3.fromRGB(178, 150, 200),
     
+    -- 🎨 CONTRÔLES IMAGE DE FOND
     BackgroundImage = "rbxassetid://127719645277162",
-    BackgroundImageTransparency = 0.3
+    BackgroundImageTransparency = 0.3,  -- 0 = opaque, 1 = invisible
+    
+    -- Cadrage et taille
+    BackgroundImageScale = Enum.ScaleType.Crop,  -- Crop, Stretch, Fit, Tile
+    BackgroundImageSize = UDim2.new(1, 0, 1, 0),  -- Taille (1 = 100%, 1.2 = 120% pour zoom)
+    BackgroundImagePosition = UDim2.new(0, 0, 0, 0),  -- Position (0.5, 0, 0.5, 0 = centré)
+    BackgroundImageAnchor = Vector2.new(0, 0),  -- Point d'ancrage (0.5, 0.5 = centre)
+    
+    -- Découpage (optionnel)
+    -- BackgroundImageRectSize = Vector2.new(1920, 1080),  -- Taille de la zone à afficher
+    -- BackgroundImageRectOffset = Vector2.new(0, 0),  -- Point de départ du découpage
 },
-
 
 		Green = {
 			TextColor = Color3.fromRGB(30, 60, 30),
@@ -798,7 +808,7 @@ local function ChangeTheme(Theme)
     
     -- Application de la couleur de fond AVANT l'image
     Rayfield.Main.BackgroundColor3 = SelectedTheme.Background
-    Rayfield.Main.BackgroundTransparency = 0  -- Garder la couleur visible
+    Rayfield.Main.BackgroundTransparency = 0
     
     -- Nettoyer l'ancienne image de fond
     local oldBackground = Rayfield.Main:FindFirstChild("ThemeBackgroundImage")
@@ -810,13 +820,26 @@ local function ChangeTheme(Theme)
     if SelectedTheme.BackgroundImage then
         local backgroundFrame = Instance.new("ImageLabel")
         backgroundFrame.Name = "ThemeBackgroundImage"
-        backgroundFrame.BackgroundTransparency = 1  -- Pas de fond pour l'ImageLabel
-        backgroundFrame.Size = UDim2.new(1, 0, 1, 0)
-        backgroundFrame.Position = UDim2.new(0, 0, 0, 0)
+        backgroundFrame.BackgroundTransparency = 1
+        
+        -- Contrôles depuis le thème
+        backgroundFrame.Size = SelectedTheme.BackgroundImageSize or UDim2.new(1, 0, 1, 0)
+        backgroundFrame.Position = SelectedTheme.BackgroundImagePosition or UDim2.new(0, 0, 0, 0)
+        backgroundFrame.AnchorPoint = SelectedTheme.BackgroundImageAnchor or Vector2.new(0, 0)
         backgroundFrame.Image = SelectedTheme.BackgroundImage
         backgroundFrame.ImageTransparency = SelectedTheme.BackgroundImageTransparency or 0.3
-        backgroundFrame.ZIndex = 2  -- Bas mais valide
-        backgroundFrame.ScaleType = Enum.ScaleType.Stretch  -- Pour couvrir toute la zone
+        backgroundFrame.ScaleType = SelectedTheme.BackgroundImageScale or Enum.ScaleType.Crop
+        backgroundFrame.ImageColor3 = SelectedTheme.BackgroundImageColor or Color3.fromRGB(255, 255, 255)
+        
+        -- ImageRect (pour découper l'image)
+        if SelectedTheme.BackgroundImageRectSize then
+            backgroundFrame.ImageRectSize = SelectedTheme.BackgroundImageRectSize
+        end
+        if SelectedTheme.BackgroundImageRectOffset then
+            backgroundFrame.ImageRectOffset = SelectedTheme.BackgroundImageRectOffset
+        end
+        
+        backgroundFrame.ZIndex = 2
         backgroundFrame.Parent = Rayfield.Main
     end
     
@@ -824,9 +847,8 @@ local function ChangeTheme(Theme)
     for _, child in ipairs(Rayfield.Main:GetChildren()) do
         if child.Name ~= "ThemeBackgroundImage" and child:IsA("GuiObject") then
             if child.ZIndex <= 2 then
-                child.ZIndex = 3  -- Au-dessus de l'image
+                child.ZIndex = 3
             end
-            -- Propager le ZIndex aux enfants aussi
             for _, subChild in ipairs(child:GetDescendants()) do
                 if subChild:IsA("GuiObject") and subChild.ZIndex <= 2 then
                     subChild.ZIndex = 3
@@ -4138,6 +4160,7 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
+
 
 
 
