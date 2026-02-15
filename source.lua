@@ -7,6 +7,7 @@
 	iRay   | Programming
 	Max    | Programming
 	Damian | Programming
+skidbibibibiibb
 
 ]]
 
@@ -803,7 +804,23 @@ local function ChangeTheme(Theme)
         oldBackground:Destroy()
     end
 
-    -- Application des couleurs du thème
+    -- Créer l'image de fond en PREMIER pour qu'elle soit derrière tout
+    if SelectedTheme.BackgroundImage then
+        local backgroundFrame = Instance.new("ImageLabel")
+        backgroundFrame.Name = "ThemeBackgroundImage"
+        backgroundFrame.BackgroundTransparency = 1
+        backgroundFrame.Size = UDim2.new(1, 0, 1, 0)
+        backgroundFrame.Position = UDim2.new(0, 0, 0, 0)
+        backgroundFrame.Image = SelectedTheme.BackgroundImage
+        backgroundFrame.ImageTransparency = SelectedTheme.BackgroundImageTransparency or 0.3
+        backgroundFrame.ZIndex = -1000
+        backgroundFrame.Parent = Rayfield.Main
+        
+        -- S'assurer qu'elle est bien au début
+        backgroundFrame.Parent = Rayfield.Main
+    end
+
+    -- Application des couleurs du thème (après l'image pour qu'elle soit derrière)
     Rayfield.Main.BackgroundColor3 = SelectedTheme.Background
     Rayfield.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
     Rayfield.Main.Topbar.CornerRepair.BackgroundColor3 = SelectedTheme.Topbar
@@ -840,32 +857,6 @@ local function ChangeTheme(Theme)
                 Element.UIStroke.Color = SelectedTheme.ElementStroke
             end
         end
-    end
-
-    -- Créer l'image de fond APRÈS avoir appliqué les couleurs du thème
-    if SelectedTheme.BackgroundImage then
-        -- Créer un frame container pour l'image
-        local backgroundContainer = Instance.new("Frame")
-        backgroundContainer.Name = "ThemeBackgroundImage"
-        backgroundContainer.BackgroundTransparency = 1
-        backgroundContainer.Size = UDim2.new(1, 0, 1, 0)
-        backgroundContainer.Position = UDim2.new(0, 0, 0, 0)
-        backgroundContainer.ZIndex = -1000
-        backgroundContainer.Parent = Rayfield.Main
-        
-        -- Créer l'image à l'intérieur du container
-        local backgroundFrame = Instance.new("ImageLabel")
-        backgroundFrame.Name = "Image"
-        backgroundFrame.BackgroundTransparency = 1
-        backgroundFrame.Size = UDim2.new(1, 0, 1, 0)
-        backgroundFrame.Position = UDim2.new(0, 0, 0, 0)
-        backgroundFrame.Image = SelectedTheme.BackgroundImage
-        backgroundFrame.ImageTransparency = SelectedTheme.BackgroundImageTransparency or 0.3
-        backgroundFrame.ZIndex = -1000
-        backgroundFrame.Parent = backgroundContainer
-        
-        -- Déplacer le container au début pour qu'il soit derrière tout
-        backgroundContainer.Parent = Rayfield.Main
     end
 end
 
@@ -4138,6 +4129,7 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
+
 
 
 
