@@ -798,6 +798,25 @@ local function ChangeTheme(Theme)
         SelectedTheme = Theme
     end
 
+    -- Nettoyer l'ancienne image de fond
+    local oldBackground = Rayfield:FindFirstChild("ThemeBackgroundImage")
+    if oldBackground then
+        oldBackground:Destroy()
+    end
+
+    -- Créer l'image de fond AVANT de changer les autres éléments
+    if SelectedTheme.BackgroundImage then
+        local backgroundFrame = Instance.new("ImageLabel")
+        backgroundFrame.Name = "ThemeBackgroundImage"
+        backgroundFrame.BackgroundTransparency = 1
+        backgroundFrame.Size = UDim2.new(1, 0, 1, 0)
+        backgroundFrame.Position = UDim2.new(0, 0, 0, 0)
+        backgroundFrame.Image = SelectedTheme.BackgroundImage
+        backgroundFrame.ImageTransparency = SelectedTheme.BackgroundImageTransparency or 0.3
+        backgroundFrame.ZIndex = -1000
+        backgroundFrame.Parent = Rayfield
+    end
+
     -- Application des couleurs du thème
     Rayfield.Main.BackgroundColor3 = SelectedTheme.Background
     Rayfield.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
@@ -836,30 +855,8 @@ local function ChangeTheme(Theme)
             end
         end
     end
-
-    -- Gestion de l'image de fond du thème
-    -- Supprimer l'ancienne image de fond
-    local oldBackground = Rayfield.Main:FindFirstChild("ThemeBackgroundImage")
-    if oldBackground then
-        oldBackground:Destroy()
-    end
-    
-    -- Créer l'image de fond si elle est définie dans le thème
-    if SelectedTheme.BackgroundImage then
-        local backgroundFrame = Instance.new("ImageLabel")
-        backgroundFrame.Name = "ThemeBackgroundImage"
-        backgroundFrame.BackgroundTransparency = 1
-        backgroundFrame.Size = UDim2.new(1, 0, 1, 0)
-        backgroundFrame.Position = UDim2.new(0, 0, 0, 0)
-        backgroundFrame.Image = SelectedTheme.BackgroundImage
-        backgroundFrame.ImageTransparency = SelectedTheme.BackgroundImageTransparency or 0.3
-        backgroundFrame.ZIndex = 0
-        
-        -- Insérer l'image au début de Main pour qu'elle soit derrière tout
-        backgroundFrame.Parent = Rayfield.Main
-        backgroundFrame:SendToBack()
-    end
 end
+
 
 
 
@@ -4132,6 +4129,7 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
+
 
 
 
