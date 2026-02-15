@@ -499,19 +499,19 @@ Amethyst = {
     InputStroke = Color3.fromRGB(80, 50, 110),
     PlaceholderColor = Color3.fromRGB(178, 150, 200),
     
-    -- 🎨 CONTRÔLES IMAGE DE FOND
+    -- 🎨 IMAGE DE FOND
     BackgroundImage = "rbxassetid://127719645277162",
-    BackgroundImageTransparency = 0.3,  -- 0 = opaque, 1 = invisible
+    BackgroundImageTransparency = 0.3,
+    BackgroundImageScale = Enum.ScaleType.Crop,
+    BackgroundImageSize = UDim2.new(1, 0, 1, 0),
+    BackgroundImagePosition = UDim2.new(0, 0, 0, 0),
+    BackgroundImageAnchor = Vector2.new(0, 0),
+    BackgroundImageColor = Color3.fromRGB(255, 255, 255),
     
-    -- Cadrage et taille
-    BackgroundImageScale = Enum.ScaleType.Crop,  -- Crop, Stretch, Fit, Tile
-    BackgroundImageSize = UDim2.new(1, 0, 1, 0),  -- Taille (1 = 100%, 1.2 = 120% pour zoom)
-    BackgroundImagePosition = UDim2.new(0, 0, 0, 0),  -- Position (0.5, 0, 0.5, 0 = centré)
-    BackgroundImageAnchor = Vector2.new(0, 0),  -- Point d'ancrage (0.5, 0.5 = centre)
-    
-    -- Découpage (optionnel)
-    -- BackgroundImageRectSize = Vector2.new(1920, 1080),  -- Taille de la zone à afficher
-    -- BackgroundImageRectOffset = Vector2.new(0, 0),  -- Point de départ du découpage
+    -- ✨ TRANSPARENCE DES ÉLÉMENTS (effet glassmorphism)
+    ElementTransparency = 0.25,    -- Toggles, dropdowns, boutons, inputs, sliders
+    TopbarTransparency = 0.15,     -- Barre du haut
+    SearchTransparency = 0.2,      -- Barre de recherche
 },
 
 		Green = {
@@ -852,9 +852,13 @@ local function ChangeTheme(Theme)
         end
     end
     
-    -- Application des autres couleurs du thème
+    -- ✨ Application de la transparence à la Topbar
+    local topbarTransparency = SelectedTheme.TopbarTransparency or 0
     Rayfield.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
+    Rayfield.Main.Topbar.BackgroundTransparency = topbarTransparency
     Rayfield.Main.Topbar.CornerRepair.BackgroundColor3 = SelectedTheme.Topbar
+    Rayfield.Main.Topbar.CornerRepair.BackgroundTransparency = topbarTransparency
+    
     Rayfield.Main.Shadow.Image.ImageColor3 = SelectedTheme.Shadow
     Rayfield.Main.Topbar.ChangeSize.ImageColor3 = SelectedTheme.TextColor
     Rayfield.Main.Topbar.Hide.ImageColor3 = SelectedTheme.TextColor
@@ -863,23 +867,33 @@ local function ChangeTheme(Theme)
         Rayfield.Main.Topbar.Settings.ImageColor3 = SelectedTheme.TextColor
         Rayfield.Main.Topbar.Divider.BackgroundColor3 = SelectedTheme.ElementStroke
     end
+    
+    -- ✨ Application de la transparence à la barre de recherche
+    local searchTransparency = SelectedTheme.SearchTransparency or 0
     Main.Search.BackgroundColor3 = SelectedTheme.TextColor
+    Main.Search.BackgroundTransparency = searchTransparency
     Main.Search.Shadow.ImageColor3 = SelectedTheme.TextColor
     Main.Search.Search.ImageColor3 = SelectedTheme.TextColor
     Main.Search.Input.PlaceholderColor3 = SelectedTheme.TextColor
     Main.Search.UIStroke.Color = SelectedTheme.SecondaryElementStroke
+    
     if Main:FindFirstChild('Notice') then
         Main.Notice.BackgroundColor3 = SelectedTheme.Background
     end
+    
     for _, text in ipairs(Rayfield:GetDescendants()) do
         if text.Parent.Parent ~= Notifications then
             if text:IsA('TextLabel') or text:IsA('TextBox') then text.TextColor3 = SelectedTheme.TextColor end
         end
     end
+    
+    -- ✨ Application de la transparence aux éléments (toggles, dropdowns, buttons, sliders, inputs)
+    local elementTransparency = SelectedTheme.ElementTransparency or 0
     for _, TabPage in ipairs(Elements:GetChildren()) do
         for _, Element in ipairs(TabPage:GetChildren()) do
             if Element.ClassName == "Frame" and Element.Name ~= "Placeholder" and Element.Name ~= "SectionSpacing" and Element.Name ~= "Divider" and Element.Name ~= "SectionTitle" and Element.Name ~= "SearchTitle-fsefsefesfsefesfesfThanks" then
                 Element.BackgroundColor3 = SelectedTheme.ElementBackground
+                Element.BackgroundTransparency = elementTransparency  -- ✨ TRANSPARENCE
                 Element.UIStroke.Color = SelectedTheme.ElementStroke
             end
         end
@@ -4155,6 +4169,7 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
+
 
 
 
