@@ -1,5 +1,4 @@
 --[[
-	upd
 	Rayfield Interface Suite
 	by Sirius rewind by frite
 ]]
@@ -501,12 +500,7 @@ Amethyst = {
     
     BackgroundImage = "rbxassetid://127719645277162",
     BackgroundImageTransparency = 0.3,
-    
-	BackgroundImageScale = Enum.ScaleType.Crop,
-	BackgroundImageSize = UDim2.new(0.8, 0, 0.8, 0),
-	BackgroundImagePosition = UDim2.new(0.5, 0, 0.5, 0),
-	BackgroundImageAnchor = Vector2.new(0.5, 0.5),
-					
+    					
     ElementTransparency = 0.2,
     TopbarTransparency = 0.1,
     SearchTransparency = 0.15,
@@ -806,28 +800,17 @@ local function ChangeTheme(Theme)
     if oldBackground then
         oldBackground:Destroy()
     end
-    
+
     if SelectedTheme.BackgroundImage then
         local backgroundFrame = Instance.new("ImageLabel")
         backgroundFrame.Name = "ThemeBackgroundImage"
         backgroundFrame.BackgroundTransparency = 1
-        
-        backgroundFrame.Size = SelectedTheme.BackgroundImageSize or UDim2.new(1, 0, 1, 0)
-        backgroundFrame.Position = SelectedTheme.BackgroundImagePosition or UDim2.new(0, 0, 0, 0)
-        backgroundFrame.AnchorPoint = SelectedTheme.BackgroundImageAnchor or Vector2.new(0, 0)
+        backgroundFrame.Size = UDim2.new(1, 0, 1, 0)
+        backgroundFrame.Position = UDim2.new(0, 0, 0, 0)
         backgroundFrame.Image = SelectedTheme.BackgroundImage
         backgroundFrame.ImageTransparency = SelectedTheme.BackgroundImageTransparency or 0.3
-        backgroundFrame.ScaleType = SelectedTheme.BackgroundImageScale or Enum.ScaleType.Crop
-        backgroundFrame.ImageColor3 = SelectedTheme.BackgroundImageColor or Color3.fromRGB(255, 255, 255)
-        
-        if SelectedTheme.BackgroundImageRectSize then
-            backgroundFrame.ImageRectSize = SelectedTheme.BackgroundImageRectSize
-        end
-        if SelectedTheme.BackgroundImageRectOffset then
-            backgroundFrame.ImageRectOffset = SelectedTheme.BackgroundImageRectOffset
-        end
-        
         backgroundFrame.ZIndex = 2
+        backgroundFrame.ScaleType = Enum.ScaleType.Stretch
         backgroundFrame.Parent = Rayfield.Main
     end
     
@@ -870,15 +853,11 @@ local function ChangeTheme(Theme)
     if Main:FindFirstChild('Notice') then
         Main.Notice.BackgroundColor3 = SelectedTheme.Background
     end
-    
     for _, text in ipairs(Rayfield:GetDescendants()) do
         if text.Parent.Parent ~= Notifications then
-            if text:IsA('TextLabel') or text:IsA('TextBox') then 
-                text.TextColor3 = SelectedTheme.TextColor 
-            end
+            if text:IsA('TextLabel') or text:IsA('TextBox') then text.TextColor3 = SelectedTheme.TextColor end
         end
     end
-    
     for _, TabPage in ipairs(Elements:GetChildren()) do
         for _, Element in ipairs(TabPage:GetChildren()) do
             if Element.ClassName == "Frame" and Element.Name ~= "Placeholder" and Element.Name ~= "SectionSpacing" and Element.Name ~= "Divider" and Element.Name ~= "SectionTitle" and Element.Name ~= "SearchTitle-fsefsefesfsefesfesfThanks" then
@@ -4158,6 +4137,7 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
+
 
 
 
