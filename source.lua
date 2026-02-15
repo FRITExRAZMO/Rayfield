@@ -7,6 +7,7 @@
 	iRay   | Programming
 	Max    | Programming
 	Damian | Programming
+test test
 
 ]]
 
@@ -797,6 +798,7 @@ local function ChangeTheme(Theme)
         SelectedTheme = Theme
     end
 
+    -- Application des couleurs du thème
     Rayfield.Main.BackgroundColor3 = SelectedTheme.Background
     Rayfield.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
     Rayfield.Main.Topbar.CornerRepair.BackgroundColor3 = SelectedTheme.Topbar
@@ -835,31 +837,30 @@ local function ChangeTheme(Theme)
         end
     end
 
-    local backgroundFrame = Rayfield.Main:FindFirstChild("BackgroundImageFrame")
-    
-    if backgroundFrame then
-        backgroundFrame:Destroy()
+    -- Gestion de l'image de fond du thème
+    -- Supprimer l'ancienne image de fond
+    local oldBackground = Rayfield.Main:FindFirstChild("ThemeBackgroundImage")
+    if oldBackground then
+        oldBackground:Destroy()
     end
     
+    -- Créer l'image de fond si elle est définie dans le thème
     if SelectedTheme.BackgroundImage then
-        backgroundFrame = Instance.new("ImageLabel")
-        backgroundFrame.Name = "BackgroundImageFrame"
+        local backgroundFrame = Instance.new("ImageLabel")
+        backgroundFrame.Name = "ThemeBackgroundImage"
         backgroundFrame.BackgroundTransparency = 1
         backgroundFrame.Size = UDim2.new(1, 0, 1, 0)
         backgroundFrame.Position = UDim2.new(0, 0, 0, 0)
         backgroundFrame.Image = SelectedTheme.BackgroundImage
         backgroundFrame.ImageTransparency = SelectedTheme.BackgroundImageTransparency or 0.3
         backgroundFrame.ZIndex = 0
-        backgroundFrame.Parent = Rayfield.Main
         
-        if Rayfield.Main:FindFirstChild("Elements") then
-            Rayfield.Main.Elements.ZIndex = 10
-        end
-        if Rayfield.Main:FindFirstChild("Topbar") then
-            Rayfield.Main.Topbar.ZIndex = 10
-        end
+        -- Insérer l'image au début de Main pour qu'elle soit derrière tout
+        backgroundFrame.Parent = Rayfield.Main
+        backgroundFrame:SendToBack()
     end
 end
+
 
 
 local function getIcon(name : string): {id: number, imageRectSize: Vector2, imageRectOffset: Vector2}
@@ -4131,6 +4132,7 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
+
 
 
 
