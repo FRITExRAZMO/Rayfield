@@ -499,19 +499,14 @@ Amethyst = {
     InputStroke = Color3.fromRGB(80, 50, 110),
     PlaceholderColor = Color3.fromRGB(178, 150, 200),
     
-    -- 🎨 IMAGE DE FOND
+    -- 🎨 IMAGE DE FOND (paramètres par défaut)
     BackgroundImage = "rbxassetid://127719645277162",
     BackgroundImageTransparency = 0.3,
-    BackgroundImageScale = Enum.ScaleType.Crop,
-    BackgroundImageSize = UDim2.new(1, 0, 1, 0),
-    BackgroundImagePosition = UDim2.new(0, 0, 0, 0),
-    BackgroundImageAnchor = Vector2.new(0, 0),
-    BackgroundImageColor = Color3.fromRGB(255, 255, 255),
     
-    -- ✨ TRANSPARENCE DES ÉLÉMENTS (effet glassmorphism)
-    ElementTransparency = 0.25,    -- Toggles, dropdowns, boutons, inputs, sliders
-    TopbarTransparency = 0.15,     -- Barre du haut
-    SearchTransparency = 0.2,      -- Barre de recherche
+    -- ✨ TRANSPARENCE DES ÉLÉMENTS
+    ElementTransparency = 0.2,
+    TopbarTransparency = 0.1,
+    SearchTransparency = 0.15,
 },
 
 		Green = {
@@ -816,24 +811,11 @@ local function ChangeTheme(Theme)
         local backgroundFrame = Instance.new("ImageLabel")
         backgroundFrame.Name = "ThemeBackgroundImage"
         backgroundFrame.BackgroundTransparency = 1
-        
-        -- Contrôles depuis le thème
-        backgroundFrame.Size = SelectedTheme.BackgroundImageSize or UDim2.new(1, 0, 1, 0)
-        backgroundFrame.Position = SelectedTheme.BackgroundImagePosition or UDim2.new(0, 0, 0, 0)
-        backgroundFrame.AnchorPoint = SelectedTheme.BackgroundImageAnchor or Vector2.new(0, 0)
+        backgroundFrame.Size = UDim2.new(1, 0, 1, 0)
+        backgroundFrame.Position = UDim2.new(0, 0, 0, 0)
         backgroundFrame.Image = SelectedTheme.BackgroundImage
         backgroundFrame.ImageTransparency = SelectedTheme.BackgroundImageTransparency or 0.3
-        backgroundFrame.ScaleType = SelectedTheme.BackgroundImageScale or Enum.ScaleType.Crop
-        backgroundFrame.ImageColor3 = SelectedTheme.BackgroundImageColor or Color3.fromRGB(255, 255, 255)
-        
-        -- ImageRect (pour découper l'image)
-        if SelectedTheme.BackgroundImageRectSize then
-            backgroundFrame.ImageRectSize = SelectedTheme.BackgroundImageRectSize
-        end
-        if SelectedTheme.BackgroundImageRectOffset then
-            backgroundFrame.ImageRectOffset = SelectedTheme.BackgroundImageRectOffset
-        end
-        
+        backgroundFrame.ScaleType = Enum.ScaleType.Crop
         backgroundFrame.ZIndex = 2
         backgroundFrame.Parent = Rayfield.Main
     end
@@ -852,24 +834,27 @@ local function ChangeTheme(Theme)
         end
     end
     
-    -- ✨ Application de la transparence à la Topbar
+    -- ✨ Récupérer les transparences du thème
     local topbarTransparency = SelectedTheme.TopbarTransparency or 0
+    local searchTransparency = SelectedTheme.SearchTransparency or 0
+    local elementTransparency = SelectedTheme.ElementTransparency or 0
+    
+    -- Application des couleurs et transparence de la Topbar
     Rayfield.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
     Rayfield.Main.Topbar.BackgroundTransparency = topbarTransparency
     Rayfield.Main.Topbar.CornerRepair.BackgroundColor3 = SelectedTheme.Topbar
     Rayfield.Main.Topbar.CornerRepair.BackgroundTransparency = topbarTransparency
-    
     Rayfield.Main.Shadow.Image.ImageColor3 = SelectedTheme.Shadow
     Rayfield.Main.Topbar.ChangeSize.ImageColor3 = SelectedTheme.TextColor
     Rayfield.Main.Topbar.Hide.ImageColor3 = SelectedTheme.TextColor
     Rayfield.Main.Topbar.Search.ImageColor3 = SelectedTheme.TextColor
+    
     if Topbar:FindFirstChild('Settings') then
         Rayfield.Main.Topbar.Settings.ImageColor3 = SelectedTheme.TextColor
         Rayfield.Main.Topbar.Divider.BackgroundColor3 = SelectedTheme.ElementStroke
     end
     
-    -- ✨ Application de la transparence à la barre de recherche
-    local searchTransparency = SelectedTheme.SearchTransparency or 0
+    -- Application de la transparence à la barre de recherche
     Main.Search.BackgroundColor3 = SelectedTheme.TextColor
     Main.Search.BackgroundTransparency = searchTransparency
     Main.Search.Shadow.ImageColor3 = SelectedTheme.TextColor
@@ -883,17 +868,18 @@ local function ChangeTheme(Theme)
     
     for _, text in ipairs(Rayfield:GetDescendants()) do
         if text.Parent.Parent ~= Notifications then
-            if text:IsA('TextLabel') or text:IsA('TextBox') then text.TextColor3 = SelectedTheme.TextColor end
+            if text:IsA('TextLabel') or text:IsA('TextBox') then 
+                text.TextColor3 = SelectedTheme.TextColor 
+            end
         end
     end
     
     -- ✨ Application de la transparence aux éléments (toggles, dropdowns, buttons, sliders, inputs)
-    local elementTransparency = SelectedTheme.ElementTransparency or 0
     for _, TabPage in ipairs(Elements:GetChildren()) do
         for _, Element in ipairs(TabPage:GetChildren()) do
             if Element.ClassName == "Frame" and Element.Name ~= "Placeholder" and Element.Name ~= "SectionSpacing" and Element.Name ~= "Divider" and Element.Name ~= "SectionTitle" and Element.Name ~= "SearchTitle-fsefsefesfsefesfesfThanks" then
                 Element.BackgroundColor3 = SelectedTheme.ElementBackground
-                Element.BackgroundTransparency = elementTransparency  -- ✨ TRANSPARENCE
+                Element.BackgroundTransparency = elementTransparency
                 Element.UIStroke.Color = SelectedTheme.ElementStroke
             end
         end
@@ -4169,6 +4155,7 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
+
 
 
 
