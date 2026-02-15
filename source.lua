@@ -1,14 +1,7 @@
 --[[
 
 	Rayfield Interface Suite
-	by Sirius
-
-	shlex  | Designing + Programming
-	iRay   | Programming
-	Max    | Programming
-	Damian | Programming
-
-tttt
+	by Sirius rewind by frite
 ]]
 
 if debugX then
@@ -1668,7 +1661,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 			TweenService:Create(blur, TweenInfo.new(0.25, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), { Size = 35 }):Play()
 			
 			local gui = Instance.new("ScreenGui")
-			gui.Name = "SolixHubLoader"
+			gui.Name = "FRITEHubLoader"
 			gui.IgnoreGuiInset = true
 			gui.ResetOnSpawn = false
 			gui.Parent = CoreGui
@@ -1686,7 +1679,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 			bg.Parent = root
 			TweenService:Create(bg, TweenInfo.new(0.25, Enum.EasingStyle.Sine), { BackgroundTransparency = 0.18 }):Play()
 			
-			local TITLE = "Rayfield"
+			local TITLE = "F R I T E H U B "
 			local labels = {}
 			local spacing = 48
 			
@@ -4162,6 +4155,7 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
+
 
 
 
