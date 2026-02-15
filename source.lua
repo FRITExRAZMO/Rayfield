@@ -7,8 +7,6 @@
 	iRay   | Programming
 	Max    | Programming
 	Damian | Programming
-skidbibibibiibb
-
 ]]
 
 if debugX then
@@ -797,35 +795,50 @@ local function ChangeTheme(Theme)
     elseif typeof(Theme) == 'table' then
         SelectedTheme = Theme
     end
-
+    
+    -- Application de la couleur de fond AVANT l'image
+    Rayfield.Main.BackgroundColor3 = SelectedTheme.Background
+    Rayfield.Main.BackgroundTransparency = 0  -- Garder la couleur visible
+    
     -- Nettoyer l'ancienne image de fond
     local oldBackground = Rayfield.Main:FindFirstChild("ThemeBackgroundImage")
     if oldBackground then
         oldBackground:Destroy()
     end
-
-    -- Créer l'image de fond en PREMIER pour qu'elle soit derrière tout
+    
+    -- Créer l'image de fond AU-DESSUS de la couleur mais DERRIÈRE les éléments
     if SelectedTheme.BackgroundImage then
         local backgroundFrame = Instance.new("ImageLabel")
         backgroundFrame.Name = "ThemeBackgroundImage"
-        backgroundFrame.BackgroundTransparency = 1
+        backgroundFrame.BackgroundTransparency = 1  -- Pas de fond pour l'ImageLabel
         backgroundFrame.Size = UDim2.new(1, 0, 1, 0)
         backgroundFrame.Position = UDim2.new(0, 0, 0, 0)
         backgroundFrame.Image = SelectedTheme.BackgroundImage
         backgroundFrame.ImageTransparency = SelectedTheme.BackgroundImageTransparency or 0.3
-        backgroundFrame.ZIndex = -1000
-        backgroundFrame.Parent = Rayfield.Main
-        
-        -- S'assurer qu'elle est bien au début
+        backgroundFrame.ZIndex = 2  -- Bas mais valide
+        backgroundFrame.ScaleType = Enum.ScaleType.Stretch  -- Pour couvrir toute la zone
         backgroundFrame.Parent = Rayfield.Main
     end
-
-    -- Application des couleurs du thème (après l'image pour qu'elle soit derrière)
-    Rayfield.Main.BackgroundColor3 = SelectedTheme.Background
+    
+    -- S'assurer que TOUS les autres éléments sont au-dessus de l'image
+    for _, child in ipairs(Rayfield.Main:GetChildren()) do
+        if child.Name ~= "ThemeBackgroundImage" and child:IsA("GuiObject") then
+            if child.ZIndex <= 2 then
+                child.ZIndex = 3  -- Au-dessus de l'image
+            end
+            -- Propager le ZIndex aux enfants aussi
+            for _, subChild in ipairs(child:GetDescendants()) do
+                if subChild:IsA("GuiObject") and subChild.ZIndex <= 2 then
+                    subChild.ZIndex = 3
+                end
+            end
+        end
+    end
+    
+    -- Application des autres couleurs du thème
     Rayfield.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
     Rayfield.Main.Topbar.CornerRepair.BackgroundColor3 = SelectedTheme.Topbar
     Rayfield.Main.Shadow.Image.ImageColor3 = SelectedTheme.Shadow
-
     Rayfield.Main.Topbar.ChangeSize.ImageColor3 = SelectedTheme.TextColor
     Rayfield.Main.Topbar.Hide.ImageColor3 = SelectedTheme.TextColor
     Rayfield.Main.Topbar.Search.ImageColor3 = SelectedTheme.TextColor
@@ -833,23 +846,19 @@ local function ChangeTheme(Theme)
         Rayfield.Main.Topbar.Settings.ImageColor3 = SelectedTheme.TextColor
         Rayfield.Main.Topbar.Divider.BackgroundColor3 = SelectedTheme.ElementStroke
     end
-
     Main.Search.BackgroundColor3 = SelectedTheme.TextColor
     Main.Search.Shadow.ImageColor3 = SelectedTheme.TextColor
     Main.Search.Search.ImageColor3 = SelectedTheme.TextColor
     Main.Search.Input.PlaceholderColor3 = SelectedTheme.TextColor
     Main.Search.UIStroke.Color = SelectedTheme.SecondaryElementStroke
-
     if Main:FindFirstChild('Notice') then
         Main.Notice.BackgroundColor3 = SelectedTheme.Background
     end
-
     for _, text in ipairs(Rayfield:GetDescendants()) do
         if text.Parent.Parent ~= Notifications then
             if text:IsA('TextLabel') or text:IsA('TextBox') then text.TextColor3 = SelectedTheme.TextColor end
         end
     end
-
     for _, TabPage in ipairs(Elements:GetChildren()) do
         for _, Element in ipairs(TabPage:GetChildren()) do
             if Element.ClassName == "Frame" and Element.Name ~= "Placeholder" and Element.Name ~= "SectionSpacing" and Element.Name ~= "Divider" and Element.Name ~= "SectionTitle" and Element.Name ~= "SearchTitle-fsefsefesfsefesfesfThanks" then
@@ -4129,6 +4138,7 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
+
 
 
 
