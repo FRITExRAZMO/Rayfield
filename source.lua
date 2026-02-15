@@ -499,11 +499,14 @@ Amethyst = {
     InputStroke = Color3.fromRGB(80, 50, 110),
     PlaceholderColor = Color3.fromRGB(178, 150, 200),
     
-    -- 🎨 IMAGE DE FOND (paramètres par défaut)
     BackgroundImage = "rbxassetid://127719645277162",
     BackgroundImageTransparency = 0.3,
     
-    -- ✨ TRANSPARENCE DES ÉLÉMENTS
+    BackgroundImageScale = Enum.ScaleType.Crop,
+    BackgroundImageSize = UDim2.new(1, 0, 1, 0),
+    BackgroundImagePosition = UDim2.new(0, 0, 0, 0),
+    BackgroundImageAnchor = Vector2.new(0, 0),
+					
     ElementTransparency = 0.2,
     TopbarTransparency = 0.1,
     SearchTransparency = 0.15,
@@ -785,7 +788,7 @@ local Hidden = false
 local Debounce = false
 local searchOpen = false
 local Notifications = Rayfield.Notifications
-local keybindConnections = {} -- For storing keybind connections to disconnect when Rayfield is destroyed
+local keybindConnections = {}
 
 local SelectedTheme = RayfieldLibrary.Theme.Default
 
@@ -796,31 +799,38 @@ local function ChangeTheme(Theme)
         SelectedTheme = Theme
     end
     
-    -- Application de la couleur de fond AVANT l'image
     Rayfield.Main.BackgroundColor3 = SelectedTheme.Background
     Rayfield.Main.BackgroundTransparency = 0
     
-    -- Nettoyer l'ancienne image de fond
     local oldBackground = Rayfield.Main:FindFirstChild("ThemeBackgroundImage")
     if oldBackground then
         oldBackground:Destroy()
     end
     
-    -- Créer l'image de fond AU-DESSUS de la couleur mais DERRIÈRE les éléments
     if SelectedTheme.BackgroundImage then
         local backgroundFrame = Instance.new("ImageLabel")
         backgroundFrame.Name = "ThemeBackgroundImage"
         backgroundFrame.BackgroundTransparency = 1
-        backgroundFrame.Size = UDim2.new(1, 0, 1, 0)
-        backgroundFrame.Position = UDim2.new(0, 0, 0, 0)
+        
+        backgroundFrame.Size = SelectedTheme.BackgroundImageSize or UDim2.new(1, 0, 1, 0)
+        backgroundFrame.Position = SelectedTheme.BackgroundImagePosition or UDim2.new(0, 0, 0, 0)
+        backgroundFrame.AnchorPoint = SelectedTheme.BackgroundImageAnchor or Vector2.new(0, 0)
         backgroundFrame.Image = SelectedTheme.BackgroundImage
         backgroundFrame.ImageTransparency = SelectedTheme.BackgroundImageTransparency or 0.3
-        backgroundFrame.ScaleType = Enum.ScaleType.Crop
+        backgroundFrame.ScaleType = SelectedTheme.BackgroundImageScale or Enum.ScaleType.Crop
+        backgroundFrame.ImageColor3 = SelectedTheme.BackgroundImageColor or Color3.fromRGB(255, 255, 255)
+        
+        if SelectedTheme.BackgroundImageRectSize then
+            backgroundFrame.ImageRectSize = SelectedTheme.BackgroundImageRectSize
+        end
+        if SelectedTheme.BackgroundImageRectOffset then
+            backgroundFrame.ImageRectOffset = SelectedTheme.BackgroundImageRectOffset
+        end
+        
         backgroundFrame.ZIndex = 2
         backgroundFrame.Parent = Rayfield.Main
     end
     
-    -- S'assurer que TOUS les autres éléments sont au-dessus de l'image
     for _, child in ipairs(Rayfield.Main:GetChildren()) do
         if child.Name ~= "ThemeBackgroundImage" and child:IsA("GuiObject") then
             if child.ZIndex <= 2 then
@@ -834,11 +844,9 @@ local function ChangeTheme(Theme)
         end
     end
     
-    -- ✨ Récupérer les transparences du thème
     local topbarTransparency = SelectedTheme.TopbarTransparency or 0
     local searchTransparency = SelectedTheme.SearchTransparency or 0
     
-    -- Application des couleurs et transparence de la Topbar
     Rayfield.Main.Topbar.BackgroundColor3 = SelectedTheme.Topbar
     Rayfield.Main.Topbar.BackgroundTransparency = topbarTransparency
     Rayfield.Main.Topbar.CornerRepair.BackgroundColor3 = SelectedTheme.Topbar
@@ -852,7 +860,6 @@ local function ChangeTheme(Theme)
         Rayfield.Main.Topbar.Divider.BackgroundColor3 = SelectedTheme.ElementStroke
     end
     
-    -- Application de la transparence à la barre de recherche
     Main.Search.BackgroundColor3 = SelectedTheme.TextColor
     Main.Search.BackgroundTransparency = searchTransparency
     Main.Search.Shadow.ImageColor3 = SelectedTheme.TextColor
@@ -864,7 +871,6 @@ local function ChangeTheme(Theme)
         Main.Notice.BackgroundColor3 = SelectedTheme.Background
     end
     
-    -- Application des couleurs de texte
     for _, text in ipairs(Rayfield:GetDescendants()) do
         if text.Parent.Parent ~= Notifications then
             if text:IsA('TextLabel') or text:IsA('TextBox') then 
@@ -873,7 +879,6 @@ local function ChangeTheme(Theme)
         end
     end
     
-    -- Application des couleurs aux éléments (SANS toucher à la transparence)
     for _, TabPage in ipairs(Elements:GetChildren()) do
         for _, Element in ipairs(TabPage:GetChildren()) do
             if Element.ClassName == "Frame" and Element.Name ~= "Placeholder" and Element.Name ~= "SectionSpacing" and Element.Name ~= "Divider" and Element.Name ~= "SectionTitle" and Element.Name ~= "SearchTitle-fsefsefesfsefesfesfThanks" then
@@ -4153,6 +4158,7 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
+
 
 
 
