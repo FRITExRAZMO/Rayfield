@@ -1,4 +1,5 @@
 --[[
+	upd
 	Rayfield Interface Suite
 	by Sirius rewind by frite
 ]]
@@ -501,10 +502,10 @@ Amethyst = {
     BackgroundImage = "rbxassetid://127719645277162",
     BackgroundImageTransparency = 0.3,
     
-    BackgroundImageScale = Enum.ScaleType.Crop,
-    BackgroundImageSize = UDim2.new(1, 0, 1, 0),
-    BackgroundImagePosition = UDim2.new(0, 0, 0, 0),
-    BackgroundImageAnchor = Vector2.new(0, 0),
+	BackgroundImageScale = Enum.ScaleType.Crop,
+	BackgroundImageSize = UDim2.new(0.8, 0, 0.8, 0),
+	BackgroundImagePosition = UDim2.new(0.5, 0, 0.5, 0),
+	BackgroundImageAnchor = Vector2.new(0.5, 0.5),
 					
     ElementTransparency = 0.2,
     TopbarTransparency = 0.1,
@@ -4157,6 +4158,7 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
+
 
 
 
