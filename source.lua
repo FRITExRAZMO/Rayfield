@@ -1,6 +1,6 @@
 --[[
 	Rayfield Interface Suite by Sirius 
-		rewind by frite
+		rewind BY FRITE
 ]]
 
 if debugX then
@@ -1063,16 +1063,13 @@ RunService.RenderStepped:Connect(function()
 		
 		resizeZone.Position = UDim2.new(1, -10, 1, -10)
 		
-		pcall(function()
-			if dragBar and dragBar.Parent then
-				local yOffset = useMobileSizing and dragOffsetMobile or dragOffset
-				dragBar.Position = UDim2.new(0.5, 0, 0, newHeight + yOffset)
-			end
-		end)
+		if dragBar then
+			local yOffset = useMobileSizing and dragOffsetMobile or dragOffset
+			dragBar.Position = UDim2.new(0.5, 0, 0, newHeight + yOffset)
+		end
 	end
-end)		
-end
-			
+end)
+				
 makeResizable(Main, ResizeZone)
 	local function connectFunctions()
 		if dragBar and enableTaptic then
@@ -4297,33 +4294,3 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
