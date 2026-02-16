@@ -1071,6 +1071,8 @@ RunService.RenderStepped:Connect(function()
 		end)
 	end
 end)		
+end
+			
 makeResizable(Main, ResizeZone)
 	local function connectFunctions()
 		if dragBar and enableTaptic then
@@ -4295,6 +4297,7 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
+
 
 
 
