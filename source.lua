@@ -1,6 +1,6 @@
 --[[
-	Rayfield Interface Suite
-	by Sirius rewind by frite
+	Rayfield Interface Suite by Sirius 
+		rewind by frite
 ]]
 
 if debugX then
@@ -500,6 +500,7 @@ Amethyst = {
     
     BackgroundImage = "rbxassetid://127719645277162",
     BackgroundImageTransparency = 0.3,
+	BackgroundImageCornerRadius = 8,
     					
     ElementTransparency = 0.2,
     TopbarTransparency = 0.1,
@@ -801,18 +802,23 @@ local function ChangeTheme(Theme)
         oldBackground:Destroy()
     end
 
-    if SelectedTheme.BackgroundImage then
-        local backgroundFrame = Instance.new("ImageLabel")
-        backgroundFrame.Name = "ThemeBackgroundImage"
-        backgroundFrame.BackgroundTransparency = 1
-        backgroundFrame.Size = UDim2.new(1, 0, 1, 0)
-        backgroundFrame.Position = UDim2.new(0, 0, 0, 0)
-        backgroundFrame.Image = SelectedTheme.BackgroundImage
-        backgroundFrame.ImageTransparency = SelectedTheme.BackgroundImageTransparency or 0.3
-        backgroundFrame.ZIndex = 2
-        backgroundFrame.ScaleType = Enum.ScaleType.Stretch
-        backgroundFrame.Parent = Rayfield.Main
-    end
+if SelectedTheme.BackgroundImage then
+    local backgroundFrame = Instance.new("ImageLabel")
+    backgroundFrame.Name = "ThemeBackgroundImage"
+    backgroundFrame.BackgroundTransparency = 1
+    backgroundFrame.Size = UDim2.new(1, 0, 1, 0)
+    backgroundFrame.Position = UDim2.new(0, 0, 0, 0)
+    backgroundFrame.Image = SelectedTheme.BackgroundImage
+    backgroundFrame.ImageTransparency = SelectedTheme.BackgroundImageTransparency or 0.3
+    backgroundFrame.ZIndex = 2
+    backgroundFrame.ScaleType = Enum.ScaleType.Stretch
+    backgroundFrame.ClipsDescendants = true
+    backgroundFrame.Parent = Rayfield.Main
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, SelectedTheme.BackgroundImageCornerRadius or 8)
+    corner.Parent = backgroundFrame
+end
     
     for _, child in ipairs(Rayfield.Main:GetChildren()) do
         if child.Name ~= "ThemeBackgroundImage" and child:IsA("GuiObject") then
@@ -4139,6 +4145,7 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
+
 
 
 
