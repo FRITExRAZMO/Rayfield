@@ -1,6 +1,6 @@
 --[[
 	Rayfield Interface Suite by Sirius 
-		rewind by frite
+		rewind BY FRITE
 ]]
 
 if debugX then
@@ -878,7 +878,7 @@ end
 local ResizeZone = Instance.new("Frame")
 ResizeZone.Name = "ResizeZone"
 ResizeZone.Size = UDim2.new(0, 20, 0, 20)
-ResizeZone.Position = UDim2.new(1, -25, 1, -25)
+ResizeZone.Position = UDim2.new(1, -10, 1, -10)
 ResizeZone.AnchorPoint = Vector2.new(0.5, 0.5)
 ResizeZone.BackgroundTransparency = 1
 ResizeZone.ZIndex = 100
@@ -1050,26 +1050,26 @@ local function makeResizable(frame, resizeZone)
 		end
 	end)
 	
-	RunService.RenderStepped:Connect(function()
-		if resizing and not Hidden and not Minimised then
-			local currentPos = UserInputService:GetMouseLocation()
-			local delta = currentPos - startPos
-			
-			local newWidth = math.clamp(startSize.X + delta.X, minSize.X, maxSize.X)
-			local newHeight = math.clamp(startSize.Y + delta.Y, minSize.Y, maxSize.Y)
-			
-			frame.Size = UDim2.new(0, newWidth, 0, newHeight)
-			Topbar.Size = UDim2.new(0, newWidth, 0, 45)
-			
-			resizeZone.Position = UDim2.new(1, -25, 1, -25)
-			
-			if dragBar then
-				dragBar.Position = useMobileSizing and UDim2.new(0.5, 0, 0.5, dragOffsetMobile) or UDim2.new(0.5, 0, 0.5, dragOffset)
-			end
+RunService.RenderStepped:Connect(function()
+	if resizing and not Hidden and not Minimised then
+		local currentPos = UserInputService:GetMouseLocation()
+		local delta = currentPos - startPos
+		
+		local newWidth = math.clamp(startSize.X + delta.X, minSize.X, maxSize.X)
+		local newHeight = math.clamp(startSize.Y + delta.Y, minSize.Y, maxSize.Y)
+		
+		frame.Size = UDim2.new(0, newWidth, 0, newHeight)
+		Topbar.Size = UDim2.new(0, newWidth, 0, 45)
+		
+		resizeZone.Position = UDim2.new(1, -10, 1, -10)
+		
+		if dragBar then
+			local yOffset = useMobileSizing and dragOffsetMobile or dragOffset
+			dragBar.Position = UDim2.new(0.5, 0, 0, newHeight + yOffset)
 		end
-	end)
-end
-
+	end
+end)
+				
 makeResizable(Main, ResizeZone)
 	local function connectFunctions()
 		if dragBar and enableTaptic then
@@ -4294,6 +4294,7 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
+
 
 
 
