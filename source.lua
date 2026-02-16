@@ -1,6 +1,6 @@
 --[[
 	Rayfield Interface Suite by Sirius 
-		rewind by frite
+			rewind BY FRITE
 ]]
 
 if debugX then
@@ -878,7 +878,7 @@ end
 local ResizeZone = Instance.new("Frame")
 ResizeZone.Name = "ResizeZone"
 ResizeZone.Size = UDim2.new(0, 20, 0, 20)
-ResizeZone.Position = UDim2.new(1, -25, 1, -25)
+ResizeZone.Position = UDim2.new(1, -10, 1, -10)
 ResizeZone.AnchorPoint = Vector2.new(0.5, 0.5)
 ResizeZone.BackgroundTransparency = 1
 ResizeZone.ZIndex = 100
@@ -1061,7 +1061,7 @@ local function makeResizable(frame, resizeZone)
 			frame.Size = UDim2.new(0, newWidth, 0, newHeight)
 			Topbar.Size = UDim2.new(0, newWidth, 0, 45)
 			
-			resizeZone.Position = UDim2.new(1, -25, 1, -25)
+			resizeZone.Position = UDim2.new(1, -10, 1, -10)
 			
 			if dragBar then
 				dragBar.Position = useMobileSizing and UDim2.new(0.5, 0, 0.5, dragOffsetMobile) or UDim2.new(0.5, 0, 0.5, dragOffset)
@@ -4294,3 +4294,4 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
+
