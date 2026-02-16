@@ -1,6 +1,6 @@
 --[[
 	Rayfield Interface Suite by Sirius 
-		rewind by frite
+		rewind by frite 1
 ]]
 
 if debugX then
@@ -855,7 +855,7 @@ end
     Main.Search.Search.ImageColor3 = SelectedTheme.TextColor
     Main.Search.Input.PlaceholderColor3 = SelectedTheme.TextColor
     Main.Search.UIStroke.Color = SelectedTheme.SecondaryElementStroke
-    
+		
     if Main:FindFirstChild('Notice') then
         Main.Notice.BackgroundColor3 = SelectedTheme.Background
     end
@@ -874,6 +874,22 @@ end
     end
 end
 
+local ResizeZone = Instance.new("Frame")
+ResizeZone.Name = "ResizeZone"
+ResizeZone.Size = UDim2.new(0, 15, 0, 15)
+ResizeZone.Position = UDim2.new(1, -30, 1, -30)
+ResizeZone.BackgroundTransparency = 1
+ResizeZone.ZIndex = 100
+ResizeZone.Parent = Main
+
+local ResizeInteract = Instance.new("TextButton")
+ResizeInteract.Name = "ResizeInteract"
+ResizeInteract.Size = UDim2.new(1, 0, 1, 0)
+ResizeInteract.BackgroundTransparency = 1
+ResizeInteract.Text = ""
+ResizeInteract.ZIndex = 101
+ResizeInteract.Parent = ResizeZone
+		
 local function getIcon(name : string): {id: number, imageRectSize: Vector2, imageRectOffset: Vector2}
 	if not Icons then
 		warn("Lucide Icons: Cannot use icons as icons library is not loaded")
@@ -926,6 +942,50 @@ local function makeDraggable(object, dragObject, enableTaptic, tapticOffset)
 	if screenGui and screenGui.IgnoreGuiInset then
 		offset += getService('GuiService'):GetGuiInset()
 	end
+
+local function makeResizable(frame, resizeZone)
+	local resizing = false
+	local startSize = frame.AbsoluteSize
+	local startPos = Vector2.new(0, 0)
+	
+	local minSize = Vector2.new(400, 300)
+	local maxSize = Vector2.new(800, 600)
+	
+	ResizeInteract.InputBegan:Connect(function(input)
+		if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and not Hidden and not Minimised then
+			resizing = true
+			startSize = frame.AbsoluteSize
+			startPos = UserInputService:GetMouseLocation()
+		end
+	end)
+	
+	UserInputService.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			resizing = false
+		end
+	end)
+	
+	RunService.RenderStepped:Connect(function()
+		if resizing and not Hidden and not Minimised then
+			local currentPos = UserInputService:GetMouseLocation()
+			local delta = currentPos - startPos
+			
+			local newWidth = math.clamp(startSize.X + delta.X, minSize.X, maxSize.X)
+			local newHeight = math.clamp(startSize.Y + delta.Y, minSize.Y, maxSize.Y)
+			
+			frame.Size = UDim2.new(0, newWidth, 0, newHeight)
+			Topbar.Size = UDim2.new(0, newWidth, 0, 45)
+			
+			resizeZone.Position = UDim2.new(1, -15, 1, -15)
+			
+			if dragBar then
+				dragBar.Position = useMobileSizing and UDim2.new(0.5, 0, 0.5, dragOffsetMobile) or UDim2.new(0.5, 0, 0.5, dragOffset)
+			end
+		end
+	end)
+end
+
+makeResizable(Main, ResizeZone)
 
 	local function connectFunctions()
 		if dragBar and enableTaptic then
@@ -1296,7 +1356,7 @@ local function Hide(notify: boolean?)
 			TweenService:Create(tabbtn.UIStroke, TweenInfo.new(0.3, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 		end
 	end
-
+	ResizeZone.Visible = false
 	dragInteract.Visible = false
 
 	for _, tab in ipairs(Elements:GetChildren()) do
@@ -1341,6 +1401,7 @@ local function Maximise()
 	TweenService:Create(Main, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Size = useMobileSizing and UDim2.new(0, 500, 0, 275) or UDim2.new(0, 500, 0, 475)}):Play()
 	TweenService:Create(Topbar, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Size = UDim2.new(0, 500, 0, 45)}):Play()
 	TabList.Visible = true
+	ResizeZone.Visible = true
 	task.wait(0.2)
 
 	Elements.Visible = true
@@ -1423,7 +1484,7 @@ local function Unhide()
 	end
 
 	dragBar.Position = useMobileSizing and UDim2.new(0.5, 0, 0.5, dragOffsetMobile) or UDim2.new(0.5, 0, 0.5, dragOffset)
-
+    ResizeZone.Visible = true
 	dragInteract.Visible = true
 
 	for _, TopbarButton in ipairs(Topbar:GetChildren()) do
@@ -1527,7 +1588,9 @@ local function Minimise()
 			end
 		end
 	end
-
+			
+    ResizeZone.Visible = false
+			
 	TweenService:Create(dragBarCosmetic, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {BackgroundTransparency = 1}):Play()
 	TweenService:Create(Topbar.UIStroke, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {Transparency = 0}):Play()
 	TweenService:Create(Main.Shadow.Image, TweenInfo.new(0.5, Enum.EasingStyle.Exponential), {ImageTransparency = 1}):Play()
@@ -4145,6 +4208,7 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
+
 
 
 
