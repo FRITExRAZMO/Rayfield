@@ -874,10 +874,12 @@ end
     end
 end
 
+-- Crée la zone de resize avec indicateur visuel (style dragBar)
 local ResizeZone = Instance.new("Frame")
 ResizeZone.Name = "ResizeZone"
-ResizeZone.Size = UDim2.new(0, 15, 0, 15)
-ResizeZone.Position = UDim2.new(1, -30, 1, -30)
+ResizeZone.Size = UDim2.new(0, 20, 0, 20)
+ResizeZone.Position = UDim2.new(1, -25, 1, -25)
+ResizeZone.AnchorPoint = Vector2.new(0.5, 0.5)
 ResizeZone.BackgroundTransparency = 1
 ResizeZone.ZIndex = 100
 ResizeZone.Parent = Main
@@ -889,6 +891,40 @@ ResizeInteract.BackgroundTransparency = 1
 ResizeInteract.Text = ""
 ResizeInteract.ZIndex = 101
 ResizeInteract.Parent = ResizeZone
+
+-- Crée l'indicateur visuel (comme le dragBar mais en diagonal)
+local ResizeIndicator = Instance.new("Frame")
+ResizeIndicator.Name = "ResizeIndicator"
+ResizeIndicator.Size = UDim2.new(0, 12, 0, 3)
+ResizeIndicator.Position = UDim2.new(0.5, 0, 0.5, 0)
+ResizeIndicator.AnchorPoint = Vector2.new(0.5, 0.5)
+ResizeIndicator.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ResizeIndicator.BackgroundTransparency = 0.7
+ResizeIndicator.BorderSizePixel = 0
+ResizeIndicator.ZIndex = 100
+ResizeIndicator.Rotation = 45  -- Rotation pour faire diagonal
+ResizeIndicator.Parent = ResizeZone
+
+local ResizeCorner = Instance.new("UICorner")
+ResizeCorner.CornerRadius = UDim.new(1, 0)
+ResizeCorner.Parent = ResizeIndicator
+
+-- Deuxième ligne pour faire le pattern
+local ResizeIndicator2 = Instance.new("Frame")
+ResizeIndicator2.Name = "ResizeIndicator2"
+ResizeIndicator2.Size = UDim2.new(0, 12, 0, 3)
+ResizeIndicator2.Position = UDim2.new(0.5, 0, 0.5, 0)
+ResizeIndicator2.AnchorPoint = Vector2.new(0.5, 0.5)
+ResizeIndicator2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ResizeIndicator2.BackgroundTransparency = 0.7
+ResizeIndicator2.BorderSizePixel = 0
+ResizeIndicator2.ZIndex = 100
+ResizeIndicator2.Rotation = -45  -- Rotation inverse pour faire le X
+ResizeIndicator2.Parent = ResizeZone
+
+local ResizeCorner2 = Instance.new("UICorner")
+ResizeCorner2.CornerRadius = UDim.new(1, 0)
+ResizeCorner2.Parent = ResizeIndicator2
 		
 local function getIcon(name : string): {id: number, imageRectSize: Vector2, imageRectOffset: Vector2}
 	if not Icons then
@@ -951,17 +987,66 @@ local function makeResizable(frame, resizeZone)
 	local minSize = Vector2.new(400, 300)
 	local maxSize = Vector2.new(800, 600)
 	
+	local indicator1 = resizeZone:FindFirstChild("ResizeIndicator")
+	local indicator2 = resizeZone:FindFirstChild("ResizeIndicator2")
+	
+	resizeZone.MouseEnter:Connect(function()
+		if not resizing and not Hidden and not Minimised then
+			TweenService:Create(indicator1, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+				BackgroundTransparency = 0.5,
+				Size = UDim2.new(0, 14, 0, 4)
+			}):Play()
+			TweenService:Create(indicator2, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+				BackgroundTransparency = 0.5,
+				Size = UDim2.new(0, 14, 0, 4)
+			}):Play()
+		end
+	end)
+	
+	resizeZone.MouseLeave:Connect(function()
+		if not resizing and not Hidden and not Minimised then
+			TweenService:Create(indicator1, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+				BackgroundTransparency = 0.7,
+				Size = UDim2.new(0, 12, 0, 3)
+			}):Play()
+			TweenService:Create(indicator2, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+				BackgroundTransparency = 0.7,
+				Size = UDim2.new(0, 12, 0, 3)
+			}):Play()
+		end
+	end)
+	
 	ResizeInteract.InputBegan:Connect(function(input)
 		if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and not Hidden and not Minimised then
 			resizing = true
 			startSize = frame.AbsoluteSize
 			startPos = UserInputService:GetMouseLocation()
+			
+			TweenService:Create(indicator1, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+				Size = UDim2.new(0, 15, 0, 4),
+				BackgroundTransparency = 0
+			}):Play()
+			TweenService:Create(indicator2, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+				Size = UDim2.new(0, 15, 0, 4),
+				BackgroundTransparency = 0
+			}):Play()
 		end
 	end)
 	
 	UserInputService.InputEnded:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			resizing = false
+			if resizing then
+				resizing = false
+				
+				TweenService:Create(indicator1, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+					Size = UDim2.new(0, 12, 0, 3),
+					BackgroundTransparency = 0.7
+				}):Play()
+				TweenService:Create(indicator2, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+					Size = UDim2.new(0, 12, 0, 3),
+					BackgroundTransparency = 0.7
+				}):Play()
+			end
 		end
 	end)
 	
@@ -976,7 +1061,7 @@ local function makeResizable(frame, resizeZone)
 			frame.Size = UDim2.new(0, newWidth, 0, newHeight)
 			Topbar.Size = UDim2.new(0, newWidth, 0, 45)
 			
-			resizeZone.Position = UDim2.new(1, -15, 1, -15)
+			resizeZone.Position = UDim2.new(1, -25, 1, -25)
 			
 			if dragBar then
 				dragBar.Position = useMobileSizing and UDim2.new(0.5, 0, 0.5, dragOffsetMobile) or UDim2.new(0.5, 0, 0.5, dragOffset)
@@ -986,7 +1071,6 @@ local function makeResizable(frame, resizeZone)
 end
 
 makeResizable(Main, ResizeZone)
-
 	local function connectFunctions()
 		if dragBar and enableTaptic then
 			dragBar.MouseEnter:Connect(function()
@@ -1485,6 +1569,8 @@ local function Unhide()
 
 	dragBar.Position = useMobileSizing and UDim2.new(0.5, 0, 0.5, dragOffsetMobile) or UDim2.new(0.5, 0, 0.5, dragOffset)
     ResizeZone.Visible = true
+	TweenService:Create(ResizeZone:FindFirstChild("ResizeIndicator"), TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {BackgroundTransparency = 0.7}):Play()
+    TweenService:Create(ResizeZone:FindFirstChild("ResizeIndicator2"), TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {BackgroundTransparency = 0.7}):Play()
 	dragInteract.Visible = true
 
 	for _, TopbarButton in ipairs(Topbar:GetChildren()) do
@@ -4208,6 +4294,7 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
+
 
 
 
