@@ -1,6 +1,6 @@
 --[[
 	Rayfield Interface Suite by Sirius 
-			rewind BY FRITE
+			rewind by frite
 ]]
 
 if debugX then
@@ -498,15 +498,25 @@ Amethyst = {
     InputStroke = Color3.fromRGB(80, 50, 110),
     PlaceholderColor = Color3.fromRGB(178, 150, 200),
     
-    BackgroundImage = "rbxassetid://127719645277162",
+    BackgroundImage = (function()
+        local images = {
+            "rbxassetid://127719645277162",
+            "rbxassetid://81662592517144",
+            "rbxassetid://132122694914057",
+			"rbxassetid://120182772342092",
+			"rbxassetid://95194346023712",
+			"rbxassetid://120488097243860",
+			"rbxassetid://72651206936581",
+        }
+        return images[math.random(1, #images)]
+    end)(),
+    
     BackgroundImageTransparency = 0.3,
-	BackgroundImageCornerRadius = 8,
-    					
+    BackgroundImageCornerRadius = 8,
     ElementTransparency = 0.2,
     TopbarTransparency = 0.1,
     SearchTransparency = 0.15,
 },
-
 		Green = {
 			TextColor = Color3.fromRGB(30, 60, 30),
 
@@ -4294,4 +4304,3 @@ task.delay(4, function()
 end)
 
 return RayfieldLibrary
-
